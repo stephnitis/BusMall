@@ -15,7 +15,10 @@ let itemTwo = document.getElementById('item-2');
 let itemThree = document.getElementById('item-3');
 
 let resultsBtn = document.getElementById('results-btn');
-let dataList = document.getElementById('data-list');
+
+// CANVAS REFERENCE
+
+let ctx = document.getElementById('my-chart').getContext('2d');
 
 // CONSTRUCTOR
 
@@ -49,6 +52,7 @@ new Product('unicorn');
 new Product('water-can');
 new Product('wine-glass');
 
+
 console.log(allProducts);
 
 // HELPER FUNCTIONS/EXECUTABLE CODE
@@ -58,7 +62,7 @@ function randomProdIndex() {
 }
 let indexArray = [];
 function renderPhotos() {
-  while (indexArray.length < 3) {
+  while (indexArray.length < 6) {
     let randomNumber = randomProdIndex();
     while (!indexArray.includes(randomNumber)) {
       indexArray.push(randomNumber);
@@ -66,9 +70,9 @@ function renderPhotos() {
   }
 
   console.log(indexArray);
-  let prodOneIndex = indexArray.pop();
-  let prodTwoIndex = indexArray.pop();
-  let prodThreeIndex = indexArray.pop();
+  let prodOneIndex = indexArray.shift();
+  let prodTwoIndex = indexArray.shift();
+  let prodThreeIndex = indexArray.shift();
 
 
   itemOne.src = allProducts[prodOneIndex].photo;
@@ -85,6 +89,80 @@ function renderPhotos() {
 
 }
 renderPhotos();
+
+// FUNCTION TO RENDER CHART
+
+function renderChart() {
+  let productNames = [];
+  let productViews = [];
+  let productClicks = [];
+
+  for (let i = 0; i < allProducts.length; i++) {
+    productNames.push(allProducts[i].name);
+    productViews.push(allProducts[i].views);
+    productClicks.push(allProducts[i].clicks);
+  }
+
+
+  let ChartObj = {
+    type: 'bar',
+    data: {
+      labels: productNames,
+      datasets: [{
+        label: '# of Views',
+        data: productViews,
+        backgroundColor: [
+          'rgba(10, 188, 208, 0.5)',
+          'rgba(10, 188, 208, 0.5)',
+          'rgba(10, 188, 208, 0.5)',
+          'rgba(10, 188, 208, 0.5)',
+          'rgba(10, 188, 208, 0.5)',
+          'rgba(10, 188, 208, 0.5)'
+        ],
+        borderColor: [
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)'
+        ],
+        borderWidth: 1
+      },
+      {
+        label: '# of Clicks',
+        data: productClicks,
+        backgroundColor: [
+          'rgba(42, 238, 140, 0.5)',
+          'rgba(42, 238, 140, 0.5)',
+          'rgba(42, 238, 140, 0.5)',
+          'rgba(42, 238, 140, 0.5)',
+          'rgba(42, 238, 140, 0.5)',
+          'rgba(42, 238, 140, 0.5)'
+        ],
+        borderColor: [
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)',
+          'rgba(19, 25, 25, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  };
+
+  new Chart(ctx, ChartObj);
+
+}
 
 // EVENT HANDLERS
 
@@ -105,13 +183,10 @@ function handleClick(event) {
   }
 }
 
-function handleShowResults(){
-  if(voteCount ===0){
-    for (let i =0; i < allProducts.length; i++){
-      let liEl = document.createElement('li');
-      liEl.textContent = `${allProducts[i].name} was selected ${allProducts[i].clicks} out of the ${allProducts[i].views} times it was displayed.`;
-      dataList.appendChild(liEl);
-    }
+function handleShowResults() {
+  if (voteCount === 0) {
+    renderChart();
+    resultsBtn.removeEventListener('click', handleShowResults);
   }
 }
 
@@ -119,4 +194,3 @@ function handleShowResults(){
 
 imgCatalog.addEventListener('click', handleClick);
 resultsBtn.addEventListener('click', handleShowResults);
-
