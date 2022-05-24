@@ -58,7 +58,7 @@ function randomProdIndex() {
 }
 let indexArray = [];
 function renderPhotos() {
-  for (let i = 0; i < 3; i++) {
+  while (indexArray.length < 3) {
     let randomNumber = randomProdIndex();
     while (!indexArray.includes(randomNumber)) {
       indexArray.push(randomNumber);
@@ -109,7 +109,7 @@ function handleShowResults(){
   if(voteCount ===0){
     for (let i =0; i < allProducts.length; i++){
       let liEl = document.createElement('li');
-      liEl.textContent = `${allProducts[i].name} was selected ${allProducts[i].clicks} out of the ${allProducts[i].views} out of 25 times it was displayed.`;
+      liEl.textContent = `${allProducts[i].name} was selected ${allProducts[i].clicks} out of the ${allProducts[i].views} times it was displayed.`;
       dataList.appendChild(liEl);
     }
   }
