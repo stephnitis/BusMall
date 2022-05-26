@@ -6,7 +6,7 @@ console.log('Welcome to the BusMall');
 
 let voteCount = 25;
 let allProducts = [];
-
+let indexArray = []; //used with render photos
 // DOM REFERENCES
 
 let imgCatalog = document.getElementById('img-catalog');
@@ -32,35 +32,50 @@ function Product(name, fileExtension = 'jpg') {
 
 }
 
-new Product('bag');
-new Product('banana');
-new Product('bathroom');
-new Product('boots');
-new Product('breakfast');
-new Product('bubblegum');
-new Product('chair');
-new Product('cthulhu');
-new Product('dog-duck');
-new Product('dragon');
-new Product('pen');
-new Product('pet-sweep');
-new Product('scissors');
-new Product('shark');
-new Product('sweep', 'png');
-new Product('tauntaun');
-new Product('unicorn');
-new Product('water-can');
-new Product('wine-glass');
+// LOCAL STORAGE RETRIEVAL
 
+function retrieveData() {
 
-console.log(allProducts);
+  let retrievePrdcts = localStorage.getItem('prdcts');
+  // console.log('retrieve prdcts', retrievePrdcts);
+
+  let parsePrdcts = JSON.parse(retrievePrdcts);
+  console.log('parsed', parsePrdcts);
+
+  if (retrievePrdcts) {
+    allProducts = parsePrdcts;
+  } else {
+    new Product('bag');
+    new Product('banana');
+    new Product('bathroom');
+    new Product('boots');
+    new Product('breakfast');
+    new Product('bubblegum');
+    new Product('chair');
+    new Product('cthulhu');
+    new Product('dog-duck');
+    new Product('dragon');
+    new Product('pen');
+    new Product('pet-sweep');
+    new Product('scissors');
+    new Product('shark');
+    new Product('sweep', 'png');
+    new Product('tauntaun');
+    new Product('unicorn');
+    new Product('water-can');
+    new Product('wine-glass');
+  }
+
+}
+//console.log(allProducts);
+
 
 // HELPER FUNCTIONS/EXECUTABLE CODE
 
 function randomProdIndex() {
   return Math.floor(Math.random() * allProducts.length);
 }
-let indexArray = [];
+
 function renderPhotos() {
   while (indexArray.length < 6) {
     let randomNumber = randomProdIndex();
@@ -88,7 +103,7 @@ function renderPhotos() {
   allProducts[prodThreeIndex].views++;
 
 }
-renderPhotos();
+
 
 // FUNCTION TO RENDER CHART
 
@@ -176,21 +191,38 @@ function handleClick(event) {
       allProducts[i].clicks++;
     }
   }
-  renderPhotos();
 
   if (voteCount === 0) {
     imgCatalog.removeEventListener('click', handleClick);
   }
+  renderPhotos();
+}
+
+// LOCAL STORAGE 
+
+function saveData() {
+
+  let stringifyPrdcts = JSON.stringify(allProducts);
+
+  console.log(stringifyPrdcts);
+
+  localStorage.setItem('prdcts', stringifyPrdcts);
 }
 
 function handleShowResults() {
+  saveData();
   if (voteCount === 0) {
     renderChart();
     resultsBtn.removeEventListener('click', handleShowResults);
   }
 }
 
+// APP STARTS HERE
+retrieveData();
+renderPhotos();
+
 // EVENT LISTENERS
 
 imgCatalog.addEventListener('click', handleClick);
 resultsBtn.addEventListener('click', handleShowResults);
+
